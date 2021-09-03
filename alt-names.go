@@ -32,6 +32,9 @@ func getParams(args []string) Params {
 func getCertData(theChan chan string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	addr := <-theChan
+	if match, _ := regexp.MatchString(".+:.*", addr); !match {
+		addr = fmt.Sprintf("%s:443", addr)
+	}
 	conn, err := tls.Dial("tcp", addr, &tls.Config{
 		InsecureSkipVerify: true,
 	})
